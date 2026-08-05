@@ -20,7 +20,7 @@ Run the notebook top to bottom to clone Wan2GP, install all system and Python de
 2. **Configure the workspace path and optional persistent data storage** – Wan2GP itself runs from fast ephemeral storage in `/content`; set `USE_GOOGLE_DRIVE_DATA = True` only if you want Google Drive to keep checkpoints, LoRAs, outputs and model caches across Colab restarts.
 3. **Download or update Wan2GP** – clones the upstream repository into `/content/Wan2GP` or pulls the latest changes when it already exists, then links Wan2GP's checkpoint and output folders into the selected data root.
 4. **Install system dependencies** – installs video and audio libraries required by Wan2GP.
-5. **Install Python dependencies** – pins PyTorch + CUDA wheels compatible with current Colab runtimes and installs Wan2GP requirements.
+5. **Install Python dependencies** – reuses the PyTorch build already present in the Colab runtime when it is suitable, and installs Wan2GP's requirements.
 6. **Launch Wan2GP** – starts the Gradio UI; keep the cell running while you interact with Wan2GP.
 
 ## Requirements
@@ -36,3 +36,16 @@ Run the notebook top to bottom to clone Wan2GP, install all system and Python de
 ## Contributing
 
 Issues and pull requests are welcome. If you notice changes in Colab runtimes or Wan2GP dependencies, please open a PR so the notebook stays up to date.
+
+## Changelog
+
+### 2026-08-07 — faster, more reliable setup
+
+Setup downloads roughly 4 GB less. No models were dropped — Wan2GP's `requirements.txt` is installed unchanged. Tested on a free-tier Colab T4.
+
+- Reuse the runtime's existing PyTorch instead of force-reinstalling 2.8.0, which re-downloaded every CUDA wheel Colab already had.
+- Install requirements with [uv](https://github.com/astral-sh/uv) rather than pip, for much faster dependency resolution.
+- Drop `xformers`: Wan2GP never picks it on a T4, and it was the only reason PyTorch was pinned to 2.8.0.
+- Install an ONNX Runtime build matching Colab's CUDA version, with an automatic CPU fallback so Wan2GP always starts.
+- Fix Wan2GP updates being silently skipped after the first run.
+- Skip `apt-get` when the libraries are already present, and cache downloaded packages on Drive when Drive storage is enabled.
