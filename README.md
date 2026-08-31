@@ -19,7 +19,7 @@ Run the notebook top to bottom to clone Wan2GP, install all system and Python de
 1. **Confirm GPU runtime** – prompts you to enable a GPU accelerator before continuing.
 2. **Configure the workspace path and optional persistent data storage** – Wan2GP itself runs from fast ephemeral storage in `/content`; set `USE_GOOGLE_DRIVE_DATA = True` only if you want Google Drive to keep checkpoints, LoRAs, outputs and model caches across Colab restarts.
 3. **Download or update Wan2GP** – clones the upstream repository into `/content/Wan2GP` or pulls the latest changes when it already exists, then links Wan2GP's checkpoint and output folders into the selected data root.
-4. **Install system dependencies** – installs video and audio libraries required by Wan2GP.
+4. **Install system dependencies** – installs video and audio libraries required by Wan2GP, verifies FFmpeg's required capabilities, and installs an integrity-checked stable FFmpeg build if Colab's copy is too old.
 5. **Install Python dependencies** – reuses the PyTorch build already present in the Colab runtime when it is suitable, and installs Wan2GP's requirements.
 6. **Launch Wan2GP** – starts the Gradio UI; keep the cell running while you interact with Wan2GP.
 
